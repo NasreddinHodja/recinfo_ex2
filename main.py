@@ -49,6 +49,12 @@ def main():
     # tokenize
     tokens_list = [tokenize(s, separators) for s in normalized]
 
+    # rmv stopwords
+    tokens_list = [
+        [token for token in tokens if token not in stopwords] for tokens in tokens_list
+    ]
+    print(tokens_list)
+
 
 if __name__ == "__main__":
     main()
