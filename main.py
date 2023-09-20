@@ -14,12 +14,11 @@ def tokenize(s, separators):
     tokens = re.split(pattern, s)
     if tokens[-1] == "":
         tokens.pop()
-    return np.array([token for token in tokens if token])
+    return [token for token in tokens if token]
 
 
 def normalize(s):
-    normalized = s.lower()
-    normalized = normalized.strip()
+    normalized = s.lower().strip()
     return normalized
 
 
@@ -43,13 +42,14 @@ def main():
     separators = [" ", ",", ".", "!", "?"]  # separadores para tokenizacao
 
     # normalize
-    vectorized_normalize = np.vectorize(normalize, otypes=[object])
-    normalized = vectorized_normalize(dictionary)
+    # vectorized_normalize = np.vectorize(normalize, otypes=[object])
+    normalized = [normalize(s) for s in dictionary]
 
     # tokenize
+    # vectorized_tokenize = np.vectorize(normalize, otypes=[object])
     tokens_list = [tokenize(s, separators) for s in normalized]
 
-    # rmv stopwords
+    # # rmv stopwords
     tokens_list = [
         [token for token in tokens if token not in stopwords] for tokens in tokens_list
     ]
