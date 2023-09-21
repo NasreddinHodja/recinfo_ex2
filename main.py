@@ -22,8 +22,24 @@ def normalize(s):
     return normalized
 
 
-def remove_stopwords():
-    pass
+def remove_stopwords(tokens_list, stopwords):
+    return [
+        [token for token in tokens if token not in stopwords] for tokens in tokens_list
+    ]
+
+
+def generate_inverted_index(tokens_list, terms):
+    inverted_index = []
+
+    for term in terms:
+        term_frequencies = []
+        for j, doc in enumerate(tokens_list):
+            frequency = doc.count(term)
+            if frequency:
+                term_frequencies.append((j, frequency))
+        inverted_index.append(term_frequencies)
+
+    return inverted_index
 
 
 def main():
@@ -42,18 +58,15 @@ def main():
     separators = [" ", ",", ".", "!", "?"]  # separadores para tokenizacao
 
     # normalize
-    # vectorized_normalize = np.vectorize(normalize, otypes=[object])
     normalized = [normalize(s) for s in dictionary]
-
     # tokenize
-    # vectorized_tokenize = np.vectorize(normalize, otypes=[object])
     tokens_list = [tokenize(s, separators) for s in normalized]
+    # rmv stopwords
+    tokens_list = remove_stopwords(tokens_list, stopwords)
+    # terms
+    terms = [term for l in tokens_list for term in l]
 
-    # # rmv stopwords
-    tokens_list = [
-        [token for token in tokens if token not in stopwords] for tokens in tokens_list
-    ]
-    print(tokens_list)
+    inverted_index = generate_inverted_index(tokens_list, terms)
 
 
 if __name__ == "__main__":
