@@ -41,6 +41,15 @@ def generate_inverted_index(tokens_list, terms):
 
     return inverted_index
 
+def strings_intersection(strings_list):
+    intersection = arrays[0]
+
+    for arr in arrays[1:]:
+        intersection = np.intersect1d(intersection, arr)
+
+    return intersection
+
+
 
 def main():
     # input
@@ -69,6 +78,7 @@ def main():
     inverted_index = generate_inverted_index(tokens_list, terms)
     print(inverted_index)
 
+    # query
 
 if __name__ == "__main__":
     main()
