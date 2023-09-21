@@ -14,7 +14,7 @@ def tokenize(s, separators):
     tokens = re.split(pattern, s)
     if tokens[-1] == "":
         tokens.pop()
-    return [token for token in tokens if token]
+    return np.array([token for token in tokens if token])
 
 
 def normalize(s):
@@ -58,15 +58,16 @@ def main():
     separators = [" ", ",", ".", "!", "?"]  # separadores para tokenizacao
 
     # normalize
-    normalized = [normalize(s) for s in dictionary]
+    normalized = np.array([normalize(s) for s in dictionary])
     # tokenize
-    tokens_list = [tokenize(s, separators) for s in normalized]
+    tokens_list = np.array([tokenize(s, separators) for s in normalized], dtype=object)
     # rmv stopwords
-    tokens_list = remove_stopwords(tokens_list, stopwords)
-    # terms
-    terms = [term for l in tokens_list for term in l]
+    tokens_list = np.array(remove_stopwords(tokens_list, stopwords), dtype=object)
+    # # terms
+    terms = np.array([term for l in tokens_list for term in l])
 
     inverted_index = generate_inverted_index(tokens_list, terms)
+    print(inverted_index)
 
 
 if __name__ == "__main__":
