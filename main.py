@@ -14,6 +14,7 @@ def tokenize(s, separators):
     tokens = re.split(pattern, s)
     if tokens[-1] == "":
         tokens.pop()
+
     return np.array([token for token in tokens if token])
 
 
@@ -30,18 +31,24 @@ def remove_stopwords(tokens_list, stopwords):
 
 def generate_inverted_index(tokens_list, terms):
     inverted_index = []
+    simple_inverted_index = []
 
     for term in terms:
         term_frequencies = []
+        term_found = []
         for j, doc in enumerate(tokens_list):
             frequency = doc.count(term)
+
             if frequency:
                 term_frequencies.append((j, frequency))
-        inverted_index.append(term_frequencies)
+                term_found.append(j)
+        
+        inverted_index.append(np.array(term_frequencies))
+        simple_inverted_index.append(np.array(term_found))
 
-    return inverted_index
+    return inverted_index, simple_inverted_index
 
-def strings_intersection(strings_list):
+def arrays_intersection(arrays):
     intersection = arrays[0]
 
     for arr in arrays[1:]:
@@ -50,6 +57,13 @@ def strings_intersection(strings_list):
     return intersection
 
 
+def arrays_union(arrays):
+    union = arrays[0]
+
+    for arr in arrays[1:]:
+        union = np.union1d(union, arr)
+
+    return union
 
 def main():
     # input
@@ -75,10 +89,15 @@ def main():
     # # terms
     terms = np.array([term for l in tokens_list for term in l])
 
-    inverted_index = generate_inverted_index(tokens_list, terms)
-    print(inverted_index)
+    inverted_index, simple_inverted_index = generate_inverted_index(tokens_list, terms)
 
-    # query
+    # AND entre os termos da consulta
+    ands = arrays_intersection(simple_inverted_index)
+    print(f"AND = {ands}")
+
+    # OR entre os termos da consulta
+    ors = arrays_union(simple_inverted_index)
+    print(f"OR = {ors}")
 
 if __name__ == "__main__":
     main()
